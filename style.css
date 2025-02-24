@@ -1,0 +1,199 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: #5a3a22;
+    font-family: Arial, sans-serif;
+}
+
+#game {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 8px solid;
+    padding: 20px;
+    background: #704423;
+    border-left-color: #855331;
+    border-top-color: #855331;
+    border-right-color: #4d2e17;
+    border-bottom-color: #4d2e17;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+#minesweeper {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 3px;
+    padding: 5px;
+    background: #5a3a22;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #7ec850 0%, #57923a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 2px solid;
+    border-left-color: #9ed677;
+    border-top-color: #9ed677;
+    border-right-color: #426e2e;
+    border-bottom-color: #426e2e;
+    position: relative;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 45%, #9ed677 46%, #9ed677 54%, transparent 55%),
+                linear-gradient(-45deg, transparent 45%, #9ed677 46%, #9ed677 54%, transparent 55%);
+    background-size: 8px 8px;
+    opacity: 0.3;
+}
+
+.cell:hover:not(.revealed):not(.flag) {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.cell span {
+    display: none;
+}
+
+.cell.revealed {
+    background: linear-gradient(135deg, #8b5e34 0%, #704423 100%);
+    cursor: default;
+    border: 2px solid #5a3a22;
+    transform: scale(0.98);
+    box-shadow: inset 0 2px 3px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.cell.revealed::before {
+    display: none;
+}
+
+.cell.revealed span {
+    display: block;
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+    animation: numberAppear 0.3s ease-out;
+}
+
+.cell.revealed[data-number="1"] span { color: #aff4ff; }
+.cell.revealed[data-number="2"] span { color: #a7ffa7; }
+.cell.revealed[data-number="3"] span { color: #ffb7b7; }
+.cell.revealed[data-number="4"] span { color: #c9a7ff; }
+.cell.revealed[data-number="5"] span { color: #ffd9a7; }
+.cell.revealed[data-number="6"] span { color: #a7ffff; }
+.cell.revealed[data-number="7"] span { color: #ffffff; }
+.cell.revealed[data-number="8"] span { color: #dfdfdf; }
+
+.cell.mine {
+    background: #8b3a3a;
+    animation: explosion 0.5s ease-out;
+}
+
+.cell.mine::after {
+    content: "💣";
+    font-size: 24px;
+    animation: bombBounce 0.5s ease-out;
+}
+
+.cell.flag {
+    position: relative;
+}
+
+.cell.flag::after {
+    content: "🚩";
+    position: absolute;
+    font-size: 22px;
+    filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3));
+    animation: flagWave 1s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+.cell.flag.removing::after {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+}
+
+.cell.hidden-number {
+    color: transparent;
+}
+
+.cell.revealed .hidden-number {
+    color: #000;
+}
+
+@keyframes numberAppear {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes explosion {
+    0% { transform: scale(1); }
+    50% { 
+        transform: scale(1.2);
+        background: #ff4444;
+    }
+    100% { 
+        transform: scale(1);
+        background: #8b3a3a;
+    }
+}
+
+@keyframes bombBounce {
+    0% { transform: translateY(-20px) rotate(-45deg); opacity: 0; }
+    100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+}
+
+@keyframes flagWave {
+    0% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+    100% { transform: rotate(-5deg); }
+}
+
+canvas {
+    display: none;
+}
+
+.particle {
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 0 4px rgba(0,0,0,0.3);
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 1000;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
