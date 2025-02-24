@@ -1,12 +1,43 @@
 const minesweeper = document.getElementById('minesweeper');
-const rows = 10;
-const cols = 10;
-const minesCount = 20;
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+const applySettings = document.getElementById('applySettings');
+const gridSizeSelect = document.getElementById('gridSize');
+const mineCountInput = document.getElementById('mineCount');
+
+let rows = 10;
+let cols = 10;
+let minesCount = 20;
 let cells;
 let mines;
 
-let keySequence = '';
-let lastKeyTime = 0;
+settingsBtn.addEventListener('click', () => {
+    settingsPanel.classList.toggle('hidden');
+});
+
+applySettings.addEventListener('click', () => {
+    const size = parseInt(gridSizeSelect.value);
+    const mines = parseInt(mineCountInput.value);
+    
+    if (mines >= size * size) {
+        alert('爆弾の数が多すぎます！');
+        return;
+    }
+    
+    rows = size;
+    cols = size;
+    minesCount = mines;
+    
+    settingsPanel.classList.add('hidden');
+    initGame();
+});
+
+// クリック以外の場所をクリックした時にパネルを閉じる
+document.addEventListener('click', (e) => {
+    if (!settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
+        settingsPanel.classList.add('hidden');
+    }
+});
 
 document.addEventListener('keydown', (event) => {
     const currentTime = new Date().getTime();
@@ -51,6 +82,9 @@ function initGame() {
     cells = [];
     mines = [];
     minesweeper.innerHTML = '';
+    minesweeper.style.gridTemplateColumns = `repeat(${cols}, 40px)`;
+    minesweeper.style.gridTemplateRows = `repeat(${rows}, 40px)`;
+    
     for (let i = 0; i < rows; i++) {
         const row = [];
         for (let j = 0; j < cols; j++) {
